@@ -4,16 +4,13 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
-
+  - main
 pool:
   vmImage: ubuntu-latest
-
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: AzureContainerApps@1
+    inputs:
+      azureSubscription: Pay-As-You-Go(dfc93ae2-77b8-43d1-8365-dbbaee92abdd)
+      imageToDeploy: ghcr.io/hcsum/azure-practice-app:latest
+      containerAppName: aca-az2003
+      resourceGroup: RG1
