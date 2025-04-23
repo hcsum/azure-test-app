@@ -1,16 +1,43 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
   - main
+
 pool:
-  name: default
-steps:
-  - task: AzureContainerApps@1
-    inputs:
-      azureSubscription: Pay-As-You-Go(dfc93ae2-77b8-43d1-8365-dbbaee92abdd)
-      imageToDeploy: ghcr.io/hcsum/azure-practice-app:latest
-      containerAppName: aca-az2003
-      resourceGroup: RG1
+  vmImage: ubuntu-latest
+
+variables:
+  imageName: ghcr.io/hcsum/azure-practice-app
+  containerAppName: aca-az2003
+  resourceGroup: RG1
+  azureSubscription: Pay-As-You-Go(dfc93ae2-77b8-43d1-8365-dbbaee92abdd)
+
+stages:
+- stage: BuildAndPush
+  displayName: Build and Push to GHCR
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+    - checkout: self
+
+    - script: |
+        echo "$(GHCR_TOKEN)" | docker login ghcr.io -u $(GHCR_USERNAME) --password-stdin
+        docker build -t $(imageName):latest .
+        docker push $(imageName):latest
+      displayName: Build and Push to GHCR
+
+- stage: Deploy
+  displayName: Deploy to Azure Container App
+  dependsOn: BuildAndPush
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: AzureContainerApps@1
+      inputs:
+        azureSubscription: $(azureSubscription)
+        imageToDeploy: $(imageName):latest
+        containerAppName: $(containerAppName)
+        resourceGroup: $(resourceGroup)
