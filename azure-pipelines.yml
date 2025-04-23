@@ -24,8 +24,8 @@ stages:
 
     - script: |
         echo "$(GHCR_TOKEN)" | docker login ghcr.io -u $(GHCR_USERNAME) --password-stdin
-        docker build -t $(imageName):latest .
-        docker push $(imageName):latest
+        docker build -t $(imageName) .
+        docker push $(imageName)
       displayName: Build and Push to GHCR
 
 - stage: Deploy
@@ -39,6 +39,6 @@ stages:
     - task: AzureContainerApps@1
       inputs:
         azureSubscription: $(azureSubscription)
-        imageToDeploy: $(imageName):latest
+        imageToDeploy: $(imageName)
         containerAppName: $(containerAppName)
         resourceGroup: $(resourceGroup)
