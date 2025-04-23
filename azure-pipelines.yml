@@ -5,7 +5,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  imageName: ghcr.io/hcsum/azure-practice-app
+  imageTag: $(Build.SourceVersion)
+  imageName: ghcr.io/hcsum/azure-practice-app:$(imageTag)
   containerAppName: aca-az2003
   resourceGroup: RG1
   azureSubscription: Pay-As-You-Go(dfc93ae2-77b8-43d1-8365-dbbaee92abdd)
