@@ -22,7 +22,10 @@ app.get('/api/data', (req, res) => {
 
 // Health check endpoint
 app.get('/', (req, res) => {
-    res.json({ status: 'ok' });
+    res.json({
+        revision: process.env.CONTAINER_APP_REVISION,
+        hostname: process.env.CONTAINER_APP_HOSTNAME
+    });
 });
 
 app.listen(port, () => {

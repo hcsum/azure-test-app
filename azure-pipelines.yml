@@ -36,6 +36,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
+    - checkout: none
     - task: AzureContainerApps@1
       inputs:
         azureSubscription: $(azureSubscription)
